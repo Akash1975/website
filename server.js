@@ -139,7 +139,7 @@ app.get("/admin/login", (req, res) => res.render("admin-login"));
 
 app.post("/admin/interface", (req, res) => {
   const { username, password } = req.body;
-  if (username === "Akash" && password === "Akya1907") {
+  if (username === process.env.USERNAME && password === process.env.PASSWORD) {
     req.session.isAdmin = true;
     return res.redirect("/admin/interface");
   }
