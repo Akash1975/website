@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Login</title>
-  <link rel="shortcut icon" href="/uploads/download.jpeg" type="image/x-icon"/>
+  <link rel="shortcut icon" href="/uploads/download.jpeg" type="image/x-icon" />
   <link rel="shortcut icon" href="/uploads/logo.png" type="image/x-icon">
   <style>
     body {
@@ -68,34 +69,54 @@
       transform: scale(1.05);
     }
 
+    .error-msg {
+      color: red;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+
     /* Responsive design */
     @media (max-width: 480px) {
       .login-container {
         padding: 1.5rem;
         margin: 0 1rem;
       }
+
       h2 {
         font-size: 1.5rem;
       }
-      input, button {
+
+      input,
+      button {
         font-size: 0.9rem;
         padding: 10px;
       }
     }
   </style>
 </head>
+
 <body>
   <div class="login-container">
-    <img src="/uploads/Aka.jpeg" alt="" width="100" height="100" style="border-radius: 50%; margin-bottom: 15px; cursor: pointer;">
+    <img src="/uploads/Aka.jpeg" alt="" width="100" height="100"
+      style="border-radius: 50%; margin-bottom: 15px; cursor: pointer;">
     <h2>Admin Login</h2>
-    <form action="/admin/interface" method="POST">
-      <input type="text" name="username" placeholder="Username" required>
-      <input type="password" name="password" placeholder="Password" required>
-      <button type="submit">Login</button>
-    </form>
-    <form action="/" method="get">
-      <button type="submit">Cancel</button>
-    </form>
+
+    <% if (errorMsg) { %>
+      <div class="error-msg">
+        <%= errorMsg %>
+      </div>
+      <% } %>
+
+        <form action="/admin/interface" method="POST">
+          <input type="text" name="username" placeholder="Username" required>
+          <input type="password" name="password" placeholder="Password" required>
+          <button type="submit">Login</button>
+        </form>
+
+        <form action="/" method="get">
+          <button type="submit">Cancel</button>
+        </form>
   </div>
 </body>
+
 </html>

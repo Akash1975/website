@@ -135,15 +135,22 @@ app.get("/project", async (req, res) => {
 });
 
 // Admin login
-app.get("/admin/login", (req, res) => res.render("admin-login"));
+// Admin login page
+app.get("/admin/login", (req, res) => {
+  const errorMsg = req.session.errorMsg || null; // get any session error
+  req.session.errorMsg = null; // clear after showing
+  res.render("admin-login", { errorMsg }); // pass it to EJS
+});
 
 app.post("/admin/interface", (req, res) => {
   const { username, password } = req.body;
-  if (username === process.env.USERNAME && password === process.env.PASSWORD) {
+  if (username === "Akash" && password === "Akya1907") {
     req.session.isAdmin = true;
     return res.redirect("/admin/interface");
   }
-  res.status(401).send("Invalid credentials");
+
+  req.session.errorMsg = "Invalid username or password!";
+  res.redirect("/admin/login");
 });
 
 // Admin dashboard (protected)
