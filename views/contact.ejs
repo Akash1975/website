@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code with Akash</title>
+  <link rel="shortcut icon" href="/uploads/download.jpeg" type="image/x-icon">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    main {
+      flex: 1;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background: url('/uploads/Background.jpg') center/cover no-repeat;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    nav {
+      padding: 10px 20px;
+      /*background: rgba(0, 0, 0, 0.4);*/
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin: 0;
+    }
+
+    .nav-list a {
+      color: white;
+      text-decoration: none;
+      padding: 8px 12px;
+      font-weight: 600;
+      border-radius: 4px;
+      transition: background 0.3s ease;
+    }
+
+    .nav-list a:hover {
+      background: rgba(255, 255, 255, 0.2);
+      text-decoration: underline;
+    }
+
+    .nav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-brand {
+      color: white;
+      font-family: 'Dancing Script', cursive;
+    }
+
+    .nav-toggle {
+      display: none;
+      font-size: 28px;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* Mobile Sidebar Menu */
+    @media (max-width: 768px) {
+      .nav-toggle {
+        display: block;
+        z-index: 1001;
+      }
+
+      .nav-list {
+        position: fixed;
+        top: 0px;
+        left: -250px;
+        width: 250px;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        flex-direction: column;
+        align-items: flex-start;
+        padding-top: 60px;
+        padding-left: 20px;
+        gap: 15px;
+        transition: left 0.3s ease-in-out;
+        z-index: 1000;
+      }
+
+      .nav-list.show {
+        left: 0;
+      }
+
+      .nav-list a {
+        font-size: 16px;
+        padding: 12px 20px;
+        display: block;
+        width: 100%;
+      }
+
+      /* Overlay behind sidebar */
+      .overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+      }
+
+      .overlay.show {
+        display: block;
+      }
+    }
+
+    /* Contact section */
+    #contact {
+      position: relative;
+      /*height: 100vh;*/
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 80px 20px;
+      background: url('/uploads/Background.jpg') center/cover no-repeat;
+      background-attachment: fixed;
+      /* optional: parallax effect */
+      color: #fff;
+      text-align: center;
+    }
+
+    #contact::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      /*background: rgba(0, 0, 0, 0.4);*/
+      /* dark overlay for readability */
+      z-index: 1;
+    }
+
+    #contact h2,
+    #contact p,
+    .contact-container {
+      position: relative;
+      z-index: 2;
+      /* ensure above overlay */
+    }
+
+    #contact h2 {
+      font-size: 48px;
+      margin-bottom: 10px;
+      margin-top: -40px;
+      font-weight: 700;
+    }
+
+    #contact p {
+      font-size: 18px;
+      margin-bottom: 50px;
+      color: #eee;
+    }
+
+    .contact-container {
+      display: flex;
+      gap: 50px;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    /* Frosted Glass Boxes */
+    .contact-form,
+    .contact-info {
+      flex: 1;
+      min-width: 300px;
+      background: rgba(255, 255, 255, 0.1);
+      /* transparent white */
+      color: #fff;
+      padding: 35px;
+      border-radius: 20px;
+      backdrop-filter: blur(12px);
+      /* frosted glass effect */
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .contact-form:hover,
+    .contact-info:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Input Fields */
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .input-group input,
+    .input-group textarea {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .input-group label {
+      position: absolute;
+      top: 50%;
+      left: 16px;
+      color: rgba(255, 255, 255, 0.7);
+      transform: translateY(-50%);
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .input-group input:focus+label,
+    .input-group input:not(:placeholder-shown)+label,
+    .input-group textarea:focus+label,
+    .input-group textarea:not(:placeholder-shown)+label {
+      top: -10px;
+      left: 12px;
+      font-size: 13px;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 0 5px;
+      border-radius: 3px;
+    }
+
+    /* Button */
+    .contact-form button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #6a5af9, #8260f6);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .contact-form button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(104, 90, 255, 0.5);
+    }
+
+    /* Contact Info */
+    .contact-info h3 {
+      font-size: 28px;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .contact-info .info-item,
+    .social-links a {
+      margin-bottom: 15px;
+      display: block;
+      color: #ffd369;
+      text-decoration: none;
+    }
+
+    .social-links a:hover {
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* Success / Error Messages */
+    .message {
+      position: fixed;
+      top: 20px;
+      right: -100%;
+      /* start off-screen */
+      padding: 15px 25px;
+      border-radius: 8px;
+      font-weight: 600;
+      color: #fff;
+      z-index: 9999;
+      opacity: 0.95;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.5s ease;
+    }
+
+    /* Success style */
+    .success-msg {
+      background-color: #28a745;
+      /* green */
+      animation: slideIn 0.5s forwards, fadeOut 0.5s 3s forwards;
+      /* slide in and fade out */
+    }
+
+    /* Error style */
+    .error-msg {
+      background-color: #dc3545;
+      /* red */
+      animation: slideIn 0.5s forwards, fadeOut 0.5s 3s forwards;
+    }
+
+    /* Slide-in animation */
+    @keyframes slideIn {
+      0% {
+        right: -100%;
+      }
+
+      100% {
+        right: 20px;
+      }
+    }
+
+    /* Fade-out animation */
+    @keyframes fadeOut {
+      0% {
+        opacity: 0.95;
+      }
+
+      100% {
+        opacity: 0;
+        right: -100%;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .contact-container {
+        flex-direction: column;
+        gap: 30px;
+      }
+    }
+
+
+    /* Footer styling */
+    footer {
+      background: linear-gradient(135deg, #1e1e1e, #333);
+      color: #fff;
+      text-align: center;
+      padding: 25px 15px;
+      margin-top: auto;
+      /* pushes footer to bottom */
+      box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    footer .footer-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    footer h3 {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      color: #f0c040;
+    }
+
+    footer p {
+      font-size: 0.95rem;
+      margin: 5px 0 15px;
+      color: #ccc;
+    }
+
+    footer .social-icons {
+      display: flex;
+      flex-wrap: wrap;
+      /* allow icons to wrap on small screens */
+      justify-content: center;
+      gap: 10px;
+      /* reduce gap on small screens */
+      margin-top: 10px;
+    }
+
+    footer .social-icons a {
+      color: #fff;
+      font-size: 1rem;
+      /* smaller font for mobile */
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    footer .social-icons a:hover {
+      color: #f0c040;
+      transform: translateY(-3px);
+    }
+
+    footer small {
+      display: block;
+      margin-top: 15px;
+      font-size: 0.8rem;
+      color: #888;
+    }
+
+    /* Footer responsive fix for small screens */
+    @media (max-width: 480px) {
+      footer .footer-content {
+        padding: 10px;
+      }
+
+      footer p {
+        font-size: 0.85rem;
+      }
+
+      footer .social-icons a {
+        font-size: 0.9rem;
+        margin: 5px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <div class="nav-header">
+      <h2 class="nav-brand"></h2>
+      <button class="nav-toggle" id="navToggle">&#9776;</button>
+    </div>
+    <ul class="nav-list" id="navList">
+      <li><a href="/">Home</a></li>
+      <li><a href="/About">About</a></li>
+      <li><a href="/Contact">Contact</a></li>
+      <li><a href="/skills">Skills</a></li>
+      <li><a href="/certificate">Certificates</a></li>
+      <li><a href="/project">Projects</a></li>
+    </ul>
+  </nav>
+
+  <!-- Contact section -->
+  <section id="contact">
+    <h2>Contact Me</h2>
+    <% if (successMsg) { %>
+      <div class="message success-msg">
+        <%= successMsg %>
+      </div>
+      <% } %>
+        <% if (errorMsg) { %>
+          <div class="message error-msg">
+            <%= errorMsg %>
+          </div>
+          <% } %>
+
+            <p>Have a project in mind or just want to say hello? I’d love to hear from you!</p>
+
+            <div class="contact-container">
+
+              <!-- Contact Form -->
+              <form action="/Contact" method="POST" class="contact-form">
+                <div class="input-group">
+                  <input type="text" name="name" required>
+                  <label>Name</label>
+                </div>
+                <div class="input-group">
+                  <input type="email" name="email" required>
+                  <label>Email</label>
+                </div>
+                <div class="input-group">
+                  <textarea name="message" rows="5" required></textarea>
+                  <label>Message</label>
+                </div>
+                <button type="submit">Send Message</button>
+              </form>
+
+              <!-- Contact Info -->
+              <div class="contact-info">
+                <h3>Get in Touch</h3>
+                <div class="info-item"><strong>Phone:</strong> +91 7276420674</div>
+                <div class="info-item"><strong>Location:</strong> Satara, India</div>
+                <div class="social-links">
+                  <a href="mailto:akashdhaigude1975@gmail.com">📧 Gmail</a>
+                  <a href="https://www.linkedin.com/in/akash-dhaigude-25ab952ab/">🔗 LinkedIn</a>
+                  <a href="https://github.com/Akash1975">🔗 GitHub</a>
+                  <a href="https://www.instagram.com/aka.sh_1907/">🔗 Instagram</a>
+                </div>
+              </div>
+
+            </div>
+  </section>
+
+
+
+
+
+  <!-- Stylish Footer -->
+  <!-- <footer>
+    <div class="footer-content">
+      <h3>Akash Dhaigude</h3>
+      <p>Showcasing my hard-earned achievements and dedication to continuous learning.</p>
+      <div class="social-icons">
+        <a style="text-decoration: none; font-size: 13px;" href="https://www.linkedin.com/in/akash-dhaigude-25ab952ab/"
+          target="_blank">🔗 Linkedin</a>
+        <a style="text-decoration: none; font-size: 13px;" href="https://github.com/Akash1975" target="_blank">🔗
+          GitHub</a>
+        <a style="text-decoration: none; font-size: 13px;" href="mailto:akashdhaigude1975@gmail.com">📧 Gmail</a>
+      </div>
+      <small>&copy; <%= new Date().getFullYear() %> Akash Dhaigude. All Rights Reserved.</small>
+    </div>
+  </footer> -->
+
+  <script>
+    document.getElementById('navToggle').addEventListener('click', () => {
+      document.getElementById('navList').classList.toggle('show');
+    });
+    setTimeout(() => {
+      const successDiv = document.querySelector('.success-msg');
+      const errorDiv = document.querySelector('.error-msg');
+
+      if (successDiv) {
+        successDiv.remove(); // remove after animation ends
+      }
+
+      if (errorDiv) {
+        errorDiv.remove();
+      }
+    }, 4000); // slightly longer than CSS animation
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+  <link rel="shortcut icon" href="/uploads/download.jpeg" type="image/x-icon"/>
+  <link rel="shortcut icon" href="/uploads/logo.png" type="image/x-icon">
+  <style>
+    body {
+      font-family: "Poppins", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #2980b9, #6dd5fa, #ffffff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .login-container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 350px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 1.5rem;
+      color: #2980b9;
+      font-size: 1.8rem;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      border-color: #2980b9;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #2980b9;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #1e6a96;
+      transform: scale(1.05);
+    }
+
+    /* Responsive design */
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 1.5rem;
+        margin: 0 1rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      input, button {
+        font-size: 0.9rem;
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <img src="/uploads/Aka.jpeg" alt="" width="100" height="100" style="border-radius: 50%; margin-bottom: 15px; cursor: pointer;">
+    <h2>Admin Login</h2>
+    <form action="/admin/interface" method="POST">
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+    <form action="/" method="get">
+      <button type="submit">Cancel</button>
+    </form>
+  </div>
+</body>
+</html>
