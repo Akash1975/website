@@ -170,8 +170,16 @@ app.get("/admin/interface", checkAdmin, async (req, res) => {
 });
 
 // Logout
+// Logout
 app.get("/admin/logout", (req, res) => {
-  req.session.destroy(() => res.redirect("/admin/login"));
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+      return res.status(500).send("Could not log out.");
+    }
+    res.clearCookie("connect.sid"); // clear session cookie
+    res.redirect("/admin/login"); // redirect to login page
+  });
 });
 
 // Skills page
