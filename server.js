@@ -5,6 +5,7 @@ const connectDB = require("./mongo/mongo"); // your DB connect file
 const session = require("express-session");
 const fs = require("fs");
 const path = require("path");
+const bcrypt = require("bcrypt");
 
 // routers & models
 const certificateRouter = require("./routers/certificate.routers");
@@ -12,6 +13,7 @@ const skillRouter = require("./routers/skills.router");
 const aboutRouter = require("./routers/about.router");
 const aboutSkillRouter = require("./routers/aboutSkill.router");
 const projectRouter = require("./routers/project.router");
+const User = require("./models/user.mongo");
 
 const Certificate = require("./models/certificate.mongo");
 const Skill = require("./models/skills.mongo");
@@ -51,8 +53,11 @@ app.use(
     secret: "Akya1907",
     resave: false,
     saveUninitialized: true,
-  })
+  }),
 );
+
+const UserRouter = require("./routers/user.router");
+app.use("/", UserRouter);
 
 // Connect DB
 connectDB();
@@ -138,20 +143,48 @@ app.get("/project", async (req, res) => {
 // Admin login
 // Admin login page
 app.get("/admin/login", (req, res) => {
-  const errorMsg = req.session.errorMsg || null; // get any session error
-  req.session.errorMsg = null; // clear after showing
-  res.render("admin-login", { errorMsg }); // pass it to EJS
+  const errorMsg = req.session.errorMsg || null;
+  req.session.errorMsg = null;
+  res.render("admin-login", { errorMsg });
 });
 
-app.post("/admin/interface", (req, res) => {
+app.post("/admin/interface", async (req, res) => {
   const { username, password } = req.body;
-  if (username === "Akash" && password === "Akya1907") {
+
+  // Hardcoded login
+  if (username === process.env.ADMIN_NAME && password === process.env.ADMIN_PASSWORD) {
     req.session.isAdmin = true;
     return res.redirect("/admin/interface");
   }
 
-  req.session.errorMsg = "Invalid username or password!";
-  res.redirect("/admin/login");
+  try {
+    const user = await User.findOne({ name: username });
+
+    if (!user) {
+      req.session.errorMsg = "User not found!";
+      return res.redirect("/admin/login");
+    }
+
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match) {
+      req.session.errorMsg = "Invalid password!";
+      return res.redirect("/admin/login");
+    }
+
+    if (user.role !== "admin") {
+      req.session.errorMsg = "You are not admin!";
+      return res.redirect("/admin/login");
+    }
+
+    req.session.isAdmin = true;
+    req.session.adminName = user.name;
+
+    res.redirect("/admin/interface");
+  } catch (error) {
+    console.error(error);
+    res.send("Login error");
+  }
 });
 
 // Admin dashboard (protected)
@@ -163,7 +196,16 @@ app.get("/admin/interface", checkAdmin, async (req, res) => {
     if (!about) about = await About.create({});
     const aboutSkills = await AboutSkill.find();
     const projects = await Project.find();
-    res.render("admin", { certificate, skills, about, aboutSkills, projects });
+    const users = await User.find(); // ✅ ADD THIS
+
+    res.render("admin", {
+      certificate,
+      skills,
+      about,
+      aboutSkills,
+      projects,
+      users, // ✅ PASS USERS TO EJS
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send("Error loading admin panel");
