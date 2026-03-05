@@ -18,7 +18,7 @@ router.post("/add", async (req, res) => {
   try {
     const newSkill = new Skill({ name: req.body.name });
     await newSkill.save();
-    res.redirect("/admin/interface");
+    res.redirect("/admin/interface#add-skills");
   } catch (err) {
     console.error(err);
     res.status(500).send("Error adding skill");
@@ -29,7 +29,7 @@ router.post("/add", async (req, res) => {
 router.post("/remove", async (req, res) => {
   try {
     await Skill.findByIdAndDelete(req.body.id);
-    res.redirect("/admin/interface");
+    res.redirect("/admin/interface#skill-list");
   } catch (err) {
     console.error(err);
     res.status(500).send("Error deleting skill");

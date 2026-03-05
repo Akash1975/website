@@ -1,71 +1,64 @@
 // routers/about.router.js
+
 const express = require("express");
 const router = express.Router();
 const About = require("../models/about.mongo");
+
 const multer = require("multer");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../config/cloudinary");
 
-// Optional: return about JSON (useful for API)
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/uploads"); // your upload folder
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + file.originalname;
-    cb(null, uniqueSuffix);
+// Cloudinary Storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "portfolio_about_images",
+    allowed_formats: ["jpg", "jpeg", "png"],
   },
 });
 
 const upload = multer({ storage });
 
-// Update About including image
-router.post(
-  "/admin/about/update/:id",
-  upload.single("image"),
-  async (req, res) => {
-    try {
-      const { paragraph1, paragraph2, paragraph3, title } = req.body;
-      const updateData = { paragraph1, paragraph2, paragraph3, title };
+// UPDATE ABOUT (WITH IMAGE)
+router.post("/admin/about/update/:id", upload.single("image"), async (req, res) => {
+  try {
+    const { paragraph1, paragraph2, paragraph3, title } = req.body;
 
-      if (req.file) {
-        updateData.image = req.file.filename; // save new image
-      }
+    const updateData = {
+      paragraph1,
+      paragraph2,
+      paragraph3,
+      title,
+    };
 
-      await About.findByIdAndUpdate(req.params.id, updateData, { new: true });
-      res.redirect("/admin/interface");
-    } catch (err) {
-      console.error("Error updating about:", err);
-      res.status(500).send("Error updating about");
+    // If image uploaded
+    if (req.file) {
+      updateData.image = req.file.path; // Cloudinary image URL
     }
+
+    await About.findByIdAndUpdate(req.params.id, updateData, { new: true });
+
+    res.redirect("/admin/interface#edit-about");
+  } catch (err) {
+    console.error("Error updating about:", err);
+    res.status(500).send("Error updating about");
   }
-);
+});
+
+// GET ABOUT API
 router.get("/api/about", async (req, res) => {
   try {
     let about = await About.findOne();
+
     if (!about) {
-      about = await About.create({}); // create default document
+      about = await About.create({});
     }
+
     res.json(about);
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
   }
 });
-
-// Update about paragraphs (used by admin form)
-// router.post("/admin/about/update/:id", async (req, res) => {
-//   try {
-//     const { paragraph1, paragraph2, paragraph3, title } = req.body;
-//     await About.findByIdAndUpdate(
-//       req.params.id,
-//       { paragraph1, paragraph2, paragraph3, title },
-//       { new: true, runValidators: true }
-//     );
-//     res.redirect("/admin/interface");
-//   } catch (err) {
-//     console.error("Error updating about:", err);
-//     res.status(500).send("Error updating about");
-//   }
-// });
 
 module.exports = router;

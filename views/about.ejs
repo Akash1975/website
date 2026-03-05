@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>
-    <%= (about && about.title) ? about.title : 'About Me' %> - Akash Dhaigude
+    code with Akash
   </title>
   <link rel="shortcut icon" href="/uploads/download.jpeg" type="image/x-icon">
   <link
@@ -378,14 +378,14 @@
       <div class="about-image">
         <!-- <img src="/uploads/Akya.jpg" alt="Akash Dhaigude" class="about-img"> -->
         <!-- <img class="about-img" src="/uploads/<%= about.image %>" alt=""> -->
-        <img class="about-img popup-trigger" src="/uploads/<%= about.image %>" alt="" style="cursor: pointer;">
+        <img class="about-img popup-trigger" src="<%= about.image %>" alt="" style="cursor: pointer;">
 
 
       </div>
       <div id="popup" class="popup">
         <div class="popup-content">
           <span class="close">&times;</span>
-          <img src="/uploads/Akya.jpeg" width="100" height="100" style="border-radius: 10%;">
+          <img src="<%= about.image %>" width="100" height="100" style="border-radius: 10%;">
           <h2>Akash Dhaigude</h2>
           <p>I am a passionate Full Stack Web Developer with expertise in HTML, CSS, JavaScript, Node.js, MongoDB,
             React.js

@@ -1,48 +1,69 @@
 const express = require("express");
 const Project = require("../models/project.mongo");
 const multer = require("multer");
-const path = require("path");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../config/cloudinary");
 
 const router = express.Router();
 
-// Multer Storage
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
+
+// Cloudinary Storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "portfolio_projects",
+    allowed_formats: ["jpg", "jpeg", "png"],
   },
 });
 
 const upload = multer({ storage });
 
-// ADD PROJECT
+
+// ================= ADD PROJECT =================
 router.post("/add", upload.single("image"), async (req, res) => {
-  const { title, description, techstack, github, live } = req.body;
+  try {
 
-  const newProject = new Project({
-    title,
-    description,
-    techstack,
-    github,
-    live,
-    image: req.file ? req.file.filename : "default.png",
-  });
+    const { title, description, techstack, github, live } = req.body;
 
-  await newProject.save();
-  res.redirect("/admin/interface");
+    const newProject = new Project({
+      title,
+      description,
+      techstack,
+      github,
+      live,
+      image: req.file ? req.file.path : "", // Cloudinary URL
+    });
+
+    await newProject.save();
+
+    res.redirect("/admin/interface#existing-project");
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error adding project");
+  }
 });
 
-// DELETE PROJECT
+
+// ================= DELETE PROJECT =================
 router.post("/delete/:id", async (req, res) => {
-  await Project.findByIdAndDelete(req.params.id);
-  res.redirect("/admin/interface");
+  try {
+
+    await Project.findByIdAndDelete(req.params.id);
+
+    res.redirect("/admin/interface#existing-project");
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error deleting project");
+  }
 });
 
-// EDIT PROJECT
+
+// ================= EDIT PROJECT =================
 router.post("/edit/:id", upload.single("image"), async (req, res) => {
   try {
+
     const data = {
       title: req.body.title,
       description: req.body.description,
@@ -50,9 +71,15 @@ router.post("/edit/:id", upload.single("image"), async (req, res) => {
       github: req.body.github,
       live: req.body.live,
     };
-    if (req.file) data.image = req.file.filename;
+
+    if (req.file) {
+      data.image = req.file.path; // Cloudinary URL
+    }
+
     await Project.findByIdAndUpdate(req.params.id, data);
-    res.redirect("/admin/interface");
+
+    res.redirect("/admin/interface#existing-project");
+
   } catch (err) {
     console.error(err);
     res.status(500).send("Error updating project");

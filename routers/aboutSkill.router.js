@@ -34,7 +34,7 @@ router.post('/admin/about/skills/edit/:id', async (req, res) => {
 router.post('/admin/about/skills/delete/:id', async (req, res) => {
   try {
     await AboutSkill.findByIdAndDelete(req.params.id);
-    res.redirect('/admin/interface');
+    res.redirect('/admin/interface#');
   } catch (err) {
     console.error('Error deleting skill:', err);
     res.status(500).send('Server error');

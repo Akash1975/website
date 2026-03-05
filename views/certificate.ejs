@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Code with Akash</title>
-  <link rel="shortcut icon" href="/uploads/download.jpeg" type="image/x-icon">
+    <title>Code with Akash</title>
+    <link rel="shortcut icon" href="/uploads/download.jpeg" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
     <style>
         * {
@@ -22,7 +22,8 @@
             display: flex;
             flex-direction: column;
         }
-    nav {
+
+        nav {
             padding: 10px 20px;
         }
 
@@ -91,7 +92,7 @@
                 gap: 15px;
                 transition: left 0.3s ease-in-out;
                 z-index: 1000;
-                
+
             }
 
             .nav-list.show {
@@ -186,7 +187,7 @@
             user-select: none;
         }
 
-    .earn {
+        .earn {
             margin-top: 1rem;
             text-align: center;
             font-weight: 800;
@@ -196,14 +197,14 @@
         }
 
 
-                /* Stylish Footer */
+        /* Stylish Footer */
         footer {
             background: linear-gradient(135deg, #1e1e1e, #333);
             color: #fff;
             text-align: center;
             padding: 25px 15px;
             margin-top: auto;
-            box-shadow: 0 -3px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.2);
         }
 
         footer .footer-content {
@@ -274,14 +275,14 @@
   <button type="submit">Upload</button>
 </form> -->
 
-    <h1 style="color: #ff0054; text-align: center; margin-top: 30px; font-family: 'Caveat', cursive;">My Certificates</h1>
+    <h1 style="color: #ff0054; text-align: center; margin-top: 30px; font-family: 'Caveat', cursive;">My Certificates
+    </h1>
     <div class="certificate-container">
-        <% certificate.forEach((c, idx)=> {
-            const delay = (idx * 0.15).toFixed(2);
+        <% certificate.forEach((c)=> {
             const imgs = Array.isArray(c.images) ? c.images : [c.image];
             imgs.forEach(img => { %>
-            <div class="cert" style="animation-delay: delay s;">
-                <img src="/uploads/<%= img %>" alt="<%= c.Name %> certificate" />
+            <div class="cert">
+                <img src="<%= img %>" alt="<%= c.Name %> certificate" />
                 <p style="color: #c8b6ff;">
                     <%= c.Name %>
                 </p>
@@ -295,15 +296,18 @@
     </div>
 
 
-     <!-- Stylish Footer -->
+    <!-- Stylish Footer -->
     <footer>
         <div class="footer-content">
             <h3>Akash Dhaigude</h3>
             <p>Showcasing my hard-earned achievements and dedication to continuous learning.</p>
             <div class="social-icons">
-                <a style="text-decoration: none; font-size: 13px;" href="https://www.linkedin.com/in/akash-dhaigude-25ab952ab/" target="_blank">🔗 Linkedin</a>
-                <a style="text-decoration: none; font-size: 13px;" href="https://github.com/Akash1975" target="_blank">🔗 GitHub</a>
-                <a style="text-decoration: none; font-size: 13px;" href="mailto:akashdhaigude1975@gmail.com">📧 Gmail</a>
+                <a style="text-decoration: none; font-size: 13px;"
+                    href="https://www.linkedin.com/in/akash-dhaigude-25ab952ab/" target="_blank">🔗 Linkedin</a>
+                <a style="text-decoration: none; font-size: 13px;" href="https://github.com/Akash1975"
+                    target="_blank">🔗 GitHub</a>
+                <a style="text-decoration: none; font-size: 13px;" href="mailto:akashdhaigude1975@gmail.com">📧
+                    Gmail</a>
             </div>
             <small>&copy; <%= new Date().getFullYear() %> Akash Dhaigude. All Rights Reserved.</small>
         </div>
@@ -312,9 +316,9 @@
     <script>
 
         document.getElementById('navToggle').addEventListener('click', () => {
-        document.getElementById('navList').classList.toggle('show');
-    });
-    
+            document.getElementById('navList').classList.toggle('show');
+        });
+
         document.addEventListener('DOMContentLoaded', () => {
             const certs = document.querySelectorAll('.cert img');
             const lb = document.getElementById('lightbox');
